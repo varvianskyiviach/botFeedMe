@@ -1,0 +1,30 @@
+# ######################
+# Python stuff
+# ######################
+__pycache__/
+
+# SQLite database
+*.sqlite3
+*.db
+
+# Environment variables
+.env
+
+
+# Staticfiles
+staticfiles/
+
+
+# ######################
+# Editors
+# ######################
+
+# JetBrains
+.idea/
+
+# VSCode
+.vscode/
+
+
+# MacOS
+.DS_Store
