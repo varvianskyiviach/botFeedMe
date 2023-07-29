@@ -1,0 +1,6 @@
+# Telegram bot settings
+TELEGRAM_BOT_API_KEY = ""
+
+# Database settings
+DATABASE_NAME = "db.sqlite3"
+
