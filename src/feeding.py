@@ -54,9 +54,11 @@ def _parse_message(raw_message: str, chat_id: int) -> Message:
     if regexp_result:
         time = regexp_result.group(1)
         volume = float(regexp_result.group(2))
-
-        current_date = datetime.now().date().strftime("%d-%m-%Y")
-        created_at = f"{time} {current_date}"
+        current_datetime = datetime.now()
+        current_date = current_datetime.strftime("%d-%m-%Y")
+        time_obj = datetime.strptime(time, "%H:%M")
+        time_formated = time_obj.strftime("%H:%M")
+        created_at = f"{time_formated} {current_date}"
 
         return Message(volume=volume, created_at=created_at, chat_id=chat_id)
 
