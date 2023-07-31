@@ -2,7 +2,7 @@ import re
 import sqlite3
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 
 import setting
 
@@ -19,6 +19,7 @@ class Message:
 
 @dataclass
 class Feeding:
+    id: Optional[int]
     volume: float
     created_at: str
 
@@ -36,7 +37,9 @@ def create(raw_message: str, chat_id: int) -> Feeding:
     )
     conn.commit()
 
-    return Feeding(volume=parsed_message.volume, created_at=parsed_message.created_at)
+    return Feeding(
+        id=None, volume=parsed_message.volume, created_at=parsed_message.created_at
+    )
 
 
 def get_list_for_today(chat_id: int) -> List[Feeding]:
@@ -46,7 +49,26 @@ def get_list_for_today(chat_id: int) -> List[Feeding]:
         (chat_id, f"%{current_date}%"),
     )
 
-    return [Feeding(volume=row[2], created_at=row[1][:5]) for row in cur.fetchall()]
+    return [
+        Feeding(
+            id=row[0],
+            created_at=row[1][:5],
+            volume=row[2],
+        )
+        for row in cur.fetchall()
+    ]
+
+
+def remove(feed_id: int) -> None:
+    try:
+        cur.execute("DELETE FROM feeding WHERE id = ?", (feed_id,))
+        conn.commit()
+    except Exception as e:
+        print("Помилка при виконанні SQL-запиту:", e)
+
+
+def update(chat_id: int) -> Feeding:
+    pass
 
 
 def _parse_message(raw_message: str, chat_id: int) -> Message:

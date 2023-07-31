@@ -3,7 +3,8 @@ import asyncio
 from telebot.async_telebot import AsyncTeleBot, types
 
 import feeding
-from setting import TELEGRAM_BOT_API_KEY
+from src.messages import MESSAGES
+from src.setting import TELEGRAM_BOT_API_KEY
 
 bot = AsyncTeleBot(TELEGRAM_BOT_API_KEY)
 
@@ -17,16 +18,7 @@ commands_list = [
 
 @bot.message_handler(commands=["start"])
 async def start(message):
-    await bot.send_message(
-        message.chat.id,
-        "Hello everyone 👋 .  Here you can follow the state of your baby’s feeding. \n\n"
-        "My main opportunity is to record a baby’s lunch with data in the database - 🍼 volume, 🕒 time. \n\n"
-        "  Just send message in the chat: \n"
-        """👉   Format: " time(hh:mm)   volume(number) " or "volume"  '👈\n"""
-        "  If you want to save lunch to database. \n\n"
-        "Please click command \\help, to get more infromation about my commands. \n\n"
-        "Well, my dear parents, it’s time to feed me 😛❗️",
-    )
+    await bot.send_message(message.chat.id, MESSAGES["start"])
 
 
 @bot.message_handler(commands=["help"])
@@ -41,14 +33,30 @@ async def help(message):
 async def list_for_today(message):
     feed_list = feeding.get_list_for_today(chat_id=message.chat.id)
     total_volume = sum(feed.volume for feed in feed_list)
+
     today_list_records = [
-        f"🍼 {feed.volume} ml -  🕒 Time {feed.created_at}" for feed in feed_list
+        f"{index + 1}.  🍼 {feed.volume} ml -  🕒 Time {feed.created_at} 🗑️ /del{index + 1}"
+        for index, feed in enumerate(feed_list)
     ]
     answer_message = (
         "Mom, Dad I ate today 👶 \n\n" + "\n\n".join(today_list_records) + "\n\n"
         f"Total volume:  {total_volume} ml"
     )
     await bot.send_message(message.chat.id, answer_message)
+
+
+@bot.message_handler(func=lambda message: message.text.startswith("/del"))
+async def remove_record(message):
+    record_number_start = message.text.find("/del") + 4
+    record_number_end = message.text.find("@") if "@" in message.text else None
+    record_number = int(message.text[record_number_start:record_number_end])
+
+    feed_list = feeding.get_list_for_today(chat_id=message.chat.id)
+    feed_id = feed_list[record_number - 1].id
+
+    feeding.remove(feed_id)
+
+    await bot.send_message(message.chat.id, "🚮  Has been removed")
 
 
 @bot.message_handler()
