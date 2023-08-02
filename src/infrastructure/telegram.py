@@ -3,9 +3,10 @@ from contextlib import suppress
 from importlib import import_module
 
 from loguru import logger
+from telebot import asyncio_helper
 from telebot.async_telebot import AsyncTeleBot, types
 
-from src.setting import SRC_FOLDER, TELEGRAM_BOT_API_KEY
+from src.setting import PROXY_URL, SRC_FOLDER, TELEGRAM_BOT_API_KEY
 
 COMMANDS_LIST = [
     types.BotCommand("/start", "➾ start up the bot;"),
@@ -18,6 +19,7 @@ def create_bot(token):
     if not token:
         raise Exception("Telegram API key is not specified in the .env  ❌")
 
+    asyncio_helper.proxy = PROXY_URL
     return AsyncTeleBot(token)
 
 
