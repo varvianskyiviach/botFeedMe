@@ -10,11 +10,6 @@ __pycache__/
 # Environment variables
 .env
 
-
-# Staticfiles
-staticfiles/
-
-
 # ######################
 # Editors
 # ######################
@@ -28,3 +23,6 @@ staticfiles/
 
 # MacOS
 .DS_Store
+
+## Log files
+*log

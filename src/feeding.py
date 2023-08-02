@@ -67,10 +67,6 @@ def remove(feed_id: int) -> None:
         print("Помилка при виконанні SQL-запиту:", e)
 
 
-def update(chat_id: int) -> Feeding:
-    pass
-
-
 def _parse_message(raw_message: str, chat_id: int) -> Message:
     regexp_result = re.match(r"(\d{1,2}:\d{1,2})\s+(\d+(\.\d+)?)", raw_message)
     if regexp_result:

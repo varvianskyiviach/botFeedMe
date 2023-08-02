@@ -5,5 +5,11 @@ MESSAGES: dict = {
     """👉   Format: " time(hh:mm)   volume(number) " or "volume"  '👈\n"""
     "  If you want to save lunch to database. \n\n"
     "Please click command /help, to get more infromation about my commands. \n\n"
-    "Well, my dear parents, it’s time to feed me 😛❗️",
+    "Well, my dear parents, it’s time to feed me 😛",
+    "help": "/add_record   -  ✍️  Send message in the chat \n"
+    "  Format: 'Time volume' or 'volume' \n\n"
+    "👉   Example: '13:30 150' or '150'; \n\n"
+    "/today   -  📜  analytics for today; \n"
+    "/del  -  🗑️  delete record.",
+    "add_record": "Just send message in the chat \n\n" "Example: '13:30 150' or '150' ",
 }
