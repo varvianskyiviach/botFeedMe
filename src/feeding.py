@@ -45,7 +45,7 @@ def create(raw_message: str, chat_id: int) -> Feeding:
 def get_list_for_today(chat_id: int) -> List[Feeding]:
     current_date = datetime.now().date().strftime("%d-%m-%Y")
     cur.execute(
-        "SELECT * FROM feeding WHERE chat_id=? AND created_at LIKE ?",
+        "SELECT * FROM feeding WHERE chat_id=? AND created_at LIKE ? ORDER BY created_at",
         (chat_id, f"%{current_date}%"),
     )
 
