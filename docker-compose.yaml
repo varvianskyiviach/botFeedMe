@@ -1,0 +1,19 @@
+version: "3"
+  
+services:
+  bot:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: python3 src/run.py
+    image: feedmebot
+    container_name: bot_feedme
+    env_file: .env
+    volumes:
+      - .:/app/
+      - ./db.sqlite3:/app/db.sqlite3
+
+
+  
