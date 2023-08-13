@@ -1,11 +1,21 @@
-from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup
+from telebot.types import (
+    InlineKeyboardButton,
+    InlineKeyboardMarkup,
+    ReplyKeyboardMarkup,
+)
 
+from src.keyboards.constants import Menu
 from src.keyboards.models import CallbackItem
 
 
-def build_callback_keyboard(
-    patterns: list[CallbackItem], width: int = 2
-) -> InlineKeyboardMarkup:
+def default_keyboard() -> ReplyKeyboardMarkup:
+    markup = ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.row(Menu.ANALYTICS, Menu.TODAY)
+
+    return markup
+
+
+def build_callback_keyboard(patterns: list[CallbackItem], width: int = 2) -> InlineKeyboardMarkup:
     keyboard = [
         [
             InlineKeyboardButton(

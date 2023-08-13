@@ -7,7 +7,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    command: python3 src/run.py
+    command: python3 -m src.run
     image: feedmebot
     container_name: bot_feedme
     env_file: .env

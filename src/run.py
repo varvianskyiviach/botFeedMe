@@ -2,21 +2,22 @@ import asyncio
 
 from loguru import logger
 
-from src.infrastructure.telegram import COMMANDS_LIST, bot
+from src.handlers import *  # noqa: F401, F403
+from src.infrastructure.telegram import bot
 
 logger.add("fbb.log", rotation="50 MB")
 
 
-async def set_commands():
-    logger.info("Commands installed 🔧")
-    try:
-        await bot.set_my_commands(COMMANDS_LIST)
-    except Exception as err:
-        logger.error(f"Error while setting commands: {err}")
+# async def set_commands():
+#     logger.info("Commands installed 🔧")
+#     try:
+#         await bot.set_my_commands(COMMANDS_LIST)
+#     except Exception as err:
+#         logger.error(f"Error while setting commands: {err}")
 
 
 async def start_bot_loop():
-    await set_commands()
+    # await set_commands()
     logger.info("Bot started 🚀")
     while True:
         try:

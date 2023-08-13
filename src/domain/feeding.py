@@ -37,13 +37,11 @@ def create(raw_message: str, chat_id: int) -> Feeding:
     )
     conn.commit()
 
-    return Feeding(
-        id=None, volume=parsed_message.volume, created_at=parsed_message.created_at
-    )
+    return Feeding(id=None, volume=parsed_message.volume, created_at=parsed_message.created_at)
 
 
 def get_list_for_today(chat_id: int) -> List[Feeding]:
-    current_date = datetime.now().date().strftime("%d-%m-%Y")
+    current_date = datetime.now().date().strftime("%Y-%m-%d")
     cur.execute(
         "SELECT * FROM feeding WHERE chat_id=? AND created_at LIKE ? ORDER BY created_at",
         (chat_id, f"%{current_date}%"),
@@ -52,7 +50,23 @@ def get_list_for_today(chat_id: int) -> List[Feeding]:
     return [
         Feeding(
             id=row[0],
-            created_at=row[1][:5],
+            created_at=row[1][10:],
+            volume=row[2],
+        )
+        for row in cur.fetchall()
+    ]
+
+
+def in_dates_range(chat_id: int, start_date, end_date) -> list[Feeding]:
+    cur.execute(
+        "SELECT * FROM feeding WHERE chat_id=? \n"
+        "AND DATE(created_at) >= ? AND DATE(created_at) <= ?  ORDER BY created_at",
+        (chat_id, start_date, end_date),
+    )
+    return [
+        Feeding(
+            id=row[0],
+            created_at=row[1][:10],
             volume=row[2],
         )
         for row in cur.fetchall()
@@ -73,18 +87,17 @@ def _parse_message(raw_message: str, chat_id: int) -> Message:
         time = regexp_result.group(1)
         volume = float(regexp_result.group(2))
         current_datetime = datetime.now()
-        current_date = current_datetime.strftime("%d-%m-%Y")
+        current_date = current_datetime.strftime("%Y-%m-%d")
         time_obj = datetime.strptime(time, "%H:%M")
         time_formated = time_obj.strftime("%H:%M")
-        created_at = f"{time_formated} {current_date}"
+        created_at = f"{current_date} {time_formated}"
 
         return Message(volume=volume, created_at=created_at, chat_id=chat_id)
 
     else:
-        volume = re.match(r"(\d+(\.\d+)?)", raw_message)
-        if volume:
-            volume = float(volume.group(1))
-            created_at = datetime.now().strftime("%H:%M %d-%m-%Y")
+        try:
+            volume = float(raw_message)
+            created_at = datetime.now().strftime("%Y-%m-%d %H:%M")
             return Message(volume=volume, created_at=created_at, chat_id=chat_id)
-        else:
+        except ValueError:
             return None

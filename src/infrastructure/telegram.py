@@ -3,24 +3,21 @@ from contextlib import suppress
 from importlib import import_module
 
 from loguru import logger
-from telebot import asyncio_helper
-from telebot.async_telebot import AsyncTeleBot, types
+from telebot.async_telebot import AsyncTeleBot
 
-from src.setting import PROXY_URL, SRC_FOLDER, TELEGRAM_BOT_API_KEY
+from src.setting import SRC_FOLDER, TELEGRAM_BOT_API_KEY
 
-COMMANDS_LIST = [
-    types.BotCommand("/start", "➾ start up the bot;"),
-    types.BotCommand("/help", "➾ get help about commands;"),
-    types.BotCommand("/today", "➾ get the list of records for today;"),
-]
+# COMMANDS_LIST = [
+#     types.BotCommand("/start", "➾ start up the bot;"),
+#     types.BotCommand("/help", "➾ get help about commands;"),
+# ]
 
 
-def create_bot(token):
+def create_bot(token, bot_username=""):
     if not token:
         raise Exception("Telegram API key is not specified in the .env  ❌")
 
-    asyncio_helper.proxy = PROXY_URL
-    return AsyncTeleBot(token)
+    return AsyncTeleBot(token, bot_username)
 
 
 def import_handlers():
