@@ -16,13 +16,19 @@ def default_keyboard() -> ReplyKeyboardMarkup:
 
 
 def build_callback_keyboard(patterns: list[CallbackItem], width: int = 2) -> InlineKeyboardMarkup:
-    keyboard = [
-        [
+    keyboard = []
+    row = []
+
+    for idx, item in enumerate(patterns):
+        row.append(
             InlineKeyboardButton(
                 text=item.name,
                 callback_data=item.callback_data,
             )
-            for item in patterns
-        ]
-    ]
+        )
+
+        if (idx + 1) % width == 0 or idx == len(patterns) - 1:
+            keyboard.append(row)
+            row = []
+
     return InlineKeyboardMarkup(keyboard)
